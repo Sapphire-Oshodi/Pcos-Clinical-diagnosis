@@ -26,6 +26,7 @@ if user_type == "Patient":
     # Section 1: General Information
     st.header("📋 General Information")
     patient_name = st.text_input("What is your name?")
+    patient_age = st.slider("Your Age", min_value=10, max_value=90, value=25, step=1)
     birth_control = st.radio(
         "Are you currently receiving birth control pills or injections?", 
         ["Yes", "No"], 
@@ -116,7 +117,7 @@ if user_type == "Patient":
         try:
             # Prepare the input data for the model
             input_data = pd.DataFrame([{
-                "Age": None,  # Replace with the appropriate age input
+                "Age": patient_age,
                 "BMI": bmi,
                 "FastingGlucose": fasting_glucose,
                 "FastingInsulin": fasting_insulin,
@@ -151,9 +152,7 @@ elif user_type == "Healthcare Provider":
     # Section 1: General Information
     st.header("📋 General Information")
     patient_name = st.text_input("Patient's Name")
-    patient_age = st.number_input("Patient's Age", min_value=0, step=1, format="%d")
-    patient_gender = st.radio("Patient's Gender", ["Female", "Male", "Other"], index=0)
-    patient_id = st.text_input("Patient ID")
+    patient_age = st.slider("Patient's Age", min_value=10, max_value=90, value=25, step=1)
     additional_notes = st.text_area("Additional Notes (Optional)")
 
     # Section 2: Ovulatory Dysfunction
@@ -188,7 +187,7 @@ elif user_type == "Healthcare Provider":
         "Volume of ovaries (in cm³)", min_value=0.0, step=0.1, format="%.1f"
     )
     stroma_endometrial_status = st.radio(
-        "Mention of increased stroma or abnormal endometrial thickness?",
+        "Was there a mention of increased stroma or abnormal endometrial thickness?",
         options=["Yes", "No", "Not Sure"]
     )
     ultrasound_findings = st.multiselect(
