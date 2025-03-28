@@ -9,19 +9,19 @@ model = joblib.load("pcos_diagnosis_pipeline.pkl")
 st.title("🌸 PCOS Diagnosis Tool")
 
 # Side menu for selecting user type
-st.sidebar.image("logo.png", use_container_width=True)
+st.sidebar.image("logo.png")
 st.sidebar.title("User Type")
 user_type = st.sidebar.selectbox("I am a:", ["Patient", "Healthcare Provider"])
 
 if user_type == "Patient":
-    st.image("Young Person Engaging With Telemedicine App In Healthcare Setting.png", use_container_width=True)
+    st.image("Young Person Engaging With Telemedicine App In Healthcare Setting.png")
     st.markdown("""
     Welcome to the **PCOS Diagnosis Tool**! 
     This tool is designed for both patients and healthcare professionals to assess the likelihood of PCOS.
     Please answer the questions carefully. Your privacy is respected, and the data is not saved.
     """)
     
-    st.sidebar.image("hal-gatewood-OgvqXGL7XO4-unsplash.jpg", use_container_width=True)
+    st.sidebar.image("hal-gatewood-OgvqXGL7XO4-unsplash.jpg")
     
     # Section 1: General Information
     st.header("📋 General Information")
@@ -74,7 +74,7 @@ if user_type == "Patient":
         help="Ovarian volume greater than 10 cm³ is often considered a feature of PCOS."
     )
     stroma_endometrial_status = st.radio(
-        "Was there mention of increased stroma or abnormal endometrial thickness?",
+        "Was there a mention of increased stroma or abnormal endometrial thickness?",
         options=["Yes", "No", "Not Sure"],
         help="Increased stroma or irregular endometrial thickness can be an indication of hormonal imbalance."
     )
@@ -134,18 +134,26 @@ if user_type == "Patient":
             # Make the prediction
             probabilities = model.predict_proba(input_data)[0]
             likelihood = probabilities[1] * 100
-            diagnosis = "PCOS Likely" if likelihood > 50 else "PCOS Unlikely"
 
             # Display the results
-            st.success(f"Prediction for {patient_name or 'the patient'}: {diagnosis}")
-            st.write(f"PCOS Likelihood: {likelihood:.2f}%")
+            if likelihood > 50:
+                diagnosis = "PCOS Likely"
+                st.success(f"Prediction for {patient_name or 'the patient'}: {diagnosis}")
+                st.write(f"PCOS Likelihood: {likelihood:.2f}%")
+                st.info("Based on the provided information, it is likely that the patient has PCOS. Please consult with a healthcare provider for further evaluation and confirmation.")
+            else:
+                diagnosis = "PCOS Unlikely"
+                st.success(f"Prediction for {patient_name or 'the patient'}: {diagnosis}")
+                st.write(f"PCOS Likelihood: {likelihood:.2f}%")
+                st.info("Based on the provided information, it is unlikely that the patient has PCOS. Please consult with a healthcare provider for further evaluation if symptoms persist.")
+            
             if additional_notes:
                 st.info(f"Additional Notes Provided: {additional_notes}")
         except ValueError as e:
             st.error(f"An error occurred: {e}. Please ensure all fields are correctly filled.")
 
 elif user_type == "Healthcare Provider":
-    st.sidebar.image("doctor.webp", use_container_width=True)
+    st.sidebar.image("doctor.webp")
     st.header("🩺 Healthcare Provider Section")
     st.write("This section allows healthcare providers to input patient details and receive a PCOS likelihood assessment. Please fill out the following information carefully.")
 
@@ -245,11 +253,19 @@ elif user_type == "Healthcare Provider":
             # Make the prediction
             probabilities = model.predict_proba(input_data)[0]
             likelihood = probabilities[1] * 100
-            diagnosis = "PCOS Likely" if likelihood > 50 else "PCOS Unlikely"
 
             # Display the results
-            st.success(f"Prediction for {patient_name or 'the patient'}: {diagnosis}")
-            st.write(f"PCOS Likelihood: {likelihood:.2f}%")
+            if likelihood > 50:
+                diagnosis = "PCOS Likely"
+                st.success(f"Prediction for {patient_name or 'the patient'}: {diagnosis}")
+                st.write(f"PCOS Likelihood: {likelihood:.2f}%")
+                st.info("Based on the provided information, it is likely that the patient has PCOS. Please consult with a healthcare provider for further evaluation and confirmation.")
+            else:
+                diagnosis = "PCOS Unlikely"
+                st.success(f"Prediction for {patient_name or 'the patient'}: {diagnosis}")
+                st.write(f"PCOS Likelihood: {likelihood:.2f}%")
+                st.info("Based on the provided information, it is unlikely that the patient has PCOS. Please consult with a healthcare provider for further evaluation if symptoms persist.")
+            
             if additional_notes:
                 st.info(f"Additional Notes Provided: {additional_notes}")
         except ValueError as e:
